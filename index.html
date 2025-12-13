@@ -198,8 +198,8 @@
     // ==========================================================
 
     const SESSION_ID = 'pc_web_user_123';
-    // CRITICAL FIX: This URL MUST be replaced with the public address of your deployed Python API (e.g., https://lily-api-1234.onrender.com/chat)
-    const API_URL = 'https://lily-api-siddarthans.onrender.com'; 
+    // CRITICAL FIX: The API URL is now correctly pointing to the Render host and the /chat endpoint.
+    const API_URL = 'https://lily-api-siddarthans.onrender.com/chat'; 
     const chatBox = document.getElementById('chat-box');
     const userInput = document.getElementById('user-input');
     const loadingIndicator = document.getElementById('loading-indicator');
@@ -270,7 +270,7 @@
         } catch (error) {
             console.error('API Error:', error);
             // This error means the API_URL is incorrect or the server is not running.
-            displayMessage('Error: Cannot connect to the LILY Backend Server. Is the API URL correct and the server running?', 'lily');
+            displayMessage('Error: Cannot connect to the LILY Backend Server. Check the console for details. (Status: Connection Failed)', 'lily');
         } finally {
             loadingIndicator.style.display = 'none';
         }
@@ -278,5 +278,4 @@
 </script>
 
 </body>
-
 </html>
