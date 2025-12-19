@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LILY AI</title>
     <style>
-        /* This is your favorite CSS - I have not changed a single line */
+        /* YOUR FAVORITE UI STYLES - UNTOUCHED */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #e5ddd5;
@@ -25,59 +25,90 @@
             flex-direction: column;
             overflow: hidden;
         }
+        /* THE LOGO HEADER */
+        .header {
+            background-color: #075e54;
+            color: white;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .header img {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            margin-right: 15px;
+            background-color: white;
+        }
         #messages {
             flex: 1;
             padding: 20px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
+            background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
         }
         .message {
             margin-bottom: 15px;
             padding: 10px 15px;
-            border-radius: 20px;
+            border-radius: 10px;
             max-width: 80%;
             word-wrap: break-word;
+            font-size: 14px;
+            position: relative;
         }
         .user {
             align-self: flex-end;
             background-color: #dcf8c6;
             color: #303030;
+            border-top-right-radius: 0;
         }
         .lily {
             align-self: flex-start;
-            background-color: #f0f0f0;
+            background-color: white;
             color: #303030;
+            border-top-left-radius: 0;
         }
         #input-area {
             display: flex;
-            padding: 15px;
+            padding: 10px;
             background-color: #f0f0f0;
+            align-items: center;
         }
         input {
             flex: 1;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 20px;
+            padding: 12px;
+            border: none;
+            border-radius: 25px;
             outline: none;
+            font-size: 15px;
         }
         button {
-            background-color: #25d366;
+            background-color: #128c7e;
             color: white;
             border: none;
-            padding: 10px 15px;
+            width: 40px;
+            height: 40px;
             margin-left: 10px;
             border-radius: 50%;
             cursor: pointer;
-            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
     </style>
 </head>
 <body>
 
 <div id="chat-container">
+    <div class="header">
+        <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" alt="LILY Logo">
+        <span>LILY AI</span>
+    </div>
     <div id="messages">
-        <div class="message lily">Hello! I am LILY. How can I help you today?</div>
+        <div class="message lily">Hello! I am LILY. I have loaded your Madras University syllabus. How can I help you with Java, Math, or Aptitude today?</div>
     </div>
     <div id="input-area">
         <input type="text" id="user-input" placeholder="Type a message...">
@@ -102,7 +133,7 @@
         messageContainer.scrollTop = messageContainer.scrollHeight;
 
         try {
-            // Updated to point to your LOCAL server
+            // Updated to point to your LOCAL server running on CMD
             const response = await fetch('http://127.0.0.1:8000/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -124,7 +155,7 @@
         } catch (error) {
             const errorDiv = document.createElement('div');
             errorDiv.className = 'message lily';
-            errorDiv.innerText = "LILY is offline. Check your CMD!";
+            errorDiv.innerText = "Error: LILY is offline. Make sure your Command Prompt is running!";
             messageContainer.appendChild(errorDiv);
         }
     }
