@@ -3,288 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LILY Chat Client - Full Screen UI</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
+    <title>LILY AI - Academic Tutor</title>
     <style>
-        /* --- COLOR VARIABLES --- */
-        :root {
-            --bg-main: white;               
-            --bg-chat-area: white;          
-            --color-header: #c2f8cb;        /* Seafoam Green Header (Original) */
-            --color-primary-text: #333333;
-            --color-primary-accent: #9966cc; /* Amethyst Accent */
-            --color-secondary: #a799b7;
-            --color-text-light: white;
-            --color-border-line: rgba(0, 0, 0, 0.1); 
-            --color-header-bar: #c2f8cb; /* Light header color */
-        }
-
-        /* 1. FULL SCREEN LAYOUT */
-        html, body {
-            height: 100%;
-            width: 100%; 
-            margin: 0;
-            padding: 0;
-            font-family: var(--font-main);
-            background-color: var(--bg-main); 
-            display: flex;
-            justify-content: flex-start; 
-            position: relative;
-            overflow: hidden; 
-        }
-        
-        /* CHAT CONTAINER IS NOW FULL SCREEN */
-        .chat-container {
-            width: 100%;  
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            
-            min-width: 100%; 
-            max-width: 100%; 
-            margin: 0; 
-            
-            background-color: var(--bg-chat-area); 
-            
-            position: relative; 
-            z-index: 10; 
-        }
-        
-        /* === WATERMARK STYLE === */
-        #watermark-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 5;
-            pointer-events: none;
-            background-image: url('logo.png');
-            background-repeat: no-repeat;
-            background-position: center center;
-            background-size: 50vmin;
-            filter: contrast(1.2); 
-            opacity: 0.2;
-        }
-        
-        /* HEADER (Light Green Header) */
-        .chat-header {
-            background-color: var(--color-header-bar); 
-            color: var(--color-primary-text); 
-            font-family: var(--font-header);
-            padding: 18px 20px;
-            font-size: 1.8em;
-            font-weight: 700;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-            
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center;
-            
-            letter-spacing: 2px;
-            width: 100%;
-            box-sizing: border-box;
-        }
-        
-        .header-title-group {
-            display: flex;
-            align-items: center;
-            margin-left: 20px; 
-            margin-right: auto;
-        }
-
-        .header-logo {
-            height: 28px;
-            width: auto;
-            margin-left: 10px;
-            position: relative;
-            top: -2px; 
-        }
-
-        /* === ABOUT BUTTON STYLE (Final 'i' Icon Style for Light Background) === */
-        #about-button {
-            /* Shape and Size */
-            width: 32px;
-            height: 32px;
-            line-height: 32px;
-            text-align: center;
-            background: none;
-            border: none;
-            
-            /* Positioning */
-            position: absolute; 
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            
-            /* Content Style */
-            color: var(--color-primary-text); 
-            font-size: 1.5em; 
-            font-weight: bold;
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-        #about-button:hover {
-            color: var(--color-primary-accent); 
-        }
-        /* === END ABOUT BUTTON STYLE === */
-        
-        /* MESSAGES */
-        .chat-box { flex-grow: 1; padding: 20px; padding-bottom: 100px; overflow-y: auto; display: flex; flex-direction: column; width: 100%; box-sizing: border-box; position: relative; z-index: 15; }
-        .message-row { display: flex; margin-bottom: 12px; align-items: flex-end; width: 100%; }
-        .lily-avatar { height: 32px; width: 32px; margin-right: 10px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
-        .message { padding: 12px 18px; border-radius: 20px; max-width: 60%; line-height: 1.5; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); color: var(--color-primary-text); background-color: #f0f0f0; }
-        .user-message-row { justify-content: flex-end; }
-        .user-message { background-color: var(--color-primary-accent); color: white; border-top-right-radius: 5px; margin-right: 0; }
-        .lily-message { background-color: var(--color-secondary); color: var(--color-text-light); border-top-left-radius: 5px; margin-left: 0; }
-        
-        /* INPUT */
-        .chat-input { position: absolute; bottom: 0; left: 0; right: 0; display: flex; align-items: center; padding: 15px 20px; background-color: white; border-top: 1px solid var(--color-secondary); box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05); z-index: 20; width: 100%; box-sizing: border-box; }
-        .attachment-button { background: none; border: none; color: var(--color-primary-accent); font-size: 1.5em; margin-right: 10px; cursor: pointer; padding: 5px; transition: color 0.2s; }
-        .input-wrapper { flex-grow: 1; display: flex; align-items: center; background-color: #f0f0f0; border-radius: 25px; padding: 0 15px; }
-        .chat-input input { flex-grow: 1; padding: 12px 0; border: none; background: transparent; font-size: 1em; font-family: var(--font-main); outline: none; }
-        .send-button { padding: 10px 20px; border: none; background-color: var(--color-primary-accent); color: var(--color-text-light); border-radius: 25px; cursor: pointer; font-size: 1em; margin-left: 10px; transition: background-color 0.2s; }
-        #loading-indicator { text-align: center; color: var(--color-primary-accent); margin-top: 10px; display: none; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; display: flex; flex-direction: column; align-items: center; height: 100vh; margin: 0; }
+        #chat-container { width: 90%; max-width: 600px; background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; height: 80vh; margin-top: 20px; overflow: hidden; }
+        #messages { flex: 1; padding: 20px; overflow-y: auto; border-bottom: 1px solid #ddd; display: flex; flex-direction: column; gap: 10px; }
+        .message { padding: 10px 15px; border-radius: 18px; max-width: 80%; line-height: 1.4; }
+        .user { align-self: flex-end; background-color: #007bff; color: white; border-bottom-right-radius: 2px; }
+        .lily { align-self: flex-start; background-color: #e9ecef; color: #333; border-bottom-left-radius: 2px; }
+        #input-area { display: flex; padding: 15px; background: #fff; }
+        input { flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 25px; outline: none; font-size: 16px; }
+        button { background-color: #007bff; color: white; border: none; padding: 10px 20px; margin-left: 10px; border-radius: 25px; cursor: pointer; font-weight: bold; }
+        button:hover { background-color: #0056b3; }
+        .header { background: #007bff; color: white; padding: 15px; width: 100%; text-align: center; font-size: 1.2rem; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div class="chat-container">
-    
-    <div id="watermark-overlay"></div>
+<div class="header">LILY AI: Madras University Semester II Tutor</div>
 
-    <div class="chat-header">
-        
-        <button id="about-button" onclick="showAboutLily()" title="About LILY">
-            <i class="fas fa-info-circle"></i>
-        </button>
-        
-        <div class="header-title-group">
-            LILY 
-            <img src="logo.png" alt="Lily Header Logo" class="header-logo">
-        </div>
+<div id="chat-container">
+    <div id="messages">
+        <div class="message lily">Hello! I am LILY, your personal tutor. How can I help you with Java, Math, or Aptitude today?</div>
     </div>
-    
-    <div class="chat-box" id="chat-box">
-        <div class="message-row">
-            <img src="logo.png" alt="Lily Avatar" class="lily-avatar">
-            <div class="message lily-message">Hi! I am LILY. How may I help you today?</div>
-        </div>
-    </div>
-    
-    <div id="loading-indicator">LILY is thinking...</div>
-    
-    <div class="chat-input">
-        <button class="attachment-button" title="Attach file (Not functional yet)">
-            <i class="fas fa-plus-circle"></i>
-        </button>
-        
-        <div class="input-wrapper">
-             <input type="text" id="user-input" placeholder="Message LILY..." onkeypress="if(event.key === 'Enter') sendMessage()">
-        </div>
-        
-        <button class="send-button" onclick="sendMessage()">Send</button>
+    <div id="input-area">
+        <input type="text" id="user-input" placeholder="Ask about JVM, Fourier Series, HCF...">
+        <button onclick="sendMessage()">Send</button>
     </div>
 </div>
 
 <script>
-    // ==========================================================
-    // === LILY'S BRAIN (API CONNECTION JAVASCRIPT) IS HERE ===
-    // ==========================================================
-
-    const SESSION_ID = 'pc_web_user_123';
-    // CRITICAL FIX: The API URL is now correctly pointing to the Render host and the /chat endpoint.
-    const API_URL = 'https://backend-codehi.onrender.com/chat'; 
-    const chatBox = document.getElementById('chat-box');
-    const userInput = document.getElementById('user-input');
-    const loadingIndicator = document.getElementById('loading-indicator');
-
-    // --- NEW FUNCTION: ABOUT LILY ---
-    function showAboutLily() {
-        const aboutMessage = 
-            "Hello! I am LILY, a helpful and friendly AI assistant designed to manage information retrieval, organization, and efficient support for you.\n\n" +
-            "I was conceived and finalized with the creative direction of **Siddarthan .S** and built with the assistance of **Gemini**.\n\n" +
-            "My core purpose is to streamline your tasks, retrieve real-time data, and provide quick, accurate responses.";
-
-        alert(aboutMessage);
-    }
-    // --- END NEW FUNCTION ---
-
-    function displayMessage(text, sender) {
-        const messageRow = document.createElement('div');
-        messageRow.className = `message-row ${sender}-message-row`;
-        
-        const messageDiv = document.createElement('div');
-        messageDiv.className = `message ${sender}-message`;
-        messageDiv.textContent = text; 
-
-        if (sender === 'lily') {
-            const avatar = document.createElement('img');
-            avatar.src = 'logo.png';
-            avatar.alt = 'Lily Avatar';
-            avatar.className = 'lily-avatar';
-            messageRow.appendChild(avatar);
-            messageRow.appendChild(messageDiv);
-        } else {
-            messageRow.appendChild(messageDiv);
-        }
-
-        chatBox.appendChild(messageRow);
-        chatBox.scrollTop = chatBox.scrollHeight;
-    }
-
     async function sendMessage() {
-        const text = userInput.value.trim();
-        if (text === "") return;
+        const inputField = document.getElementById('user-input');
+        const messageContainer = document.getElementById('messages');
+        const userText = inputField.value.trim();
 
-        displayMessage(text, 'user');
-        userInput.value = '';
-        loadingIndicator.style.display = 'block';
+        if (!userText) return;
+
+        // Display user message
+        const userDiv = document.createElement('div');
+        userDiv.className = 'message user';
+        userDiv.innerText = userText;
+        messageContainer.appendChild(userDiv);
+        inputField.value = '';
+        messageContainer.scrollTop = messageContainer.scrollHeight;
 
         try {
-            const response = await fetch(API_URL, {
+            // CONNECTING TO LOCAL CMD SERVER
+            const response = await fetch('http://127.0.0.1:8000/chat', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    user_input: text,
-                    session_id: SESSION_ID 
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    user_input: userText,
+                    session_id: "student_session_01" 
                 })
             });
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
             const data = await response.json();
             
-            const lilyResponse = data.response || "I received a blank response.";
-            displayMessage(lilyResponse, 'lily');
+            // Display LILY's response
+            const lilyDiv = document.createElement('div');
+            lilyDiv.className = 'message lily';
+            lilyDiv.innerText = data.response;
+            messageContainer.appendChild(lilyDiv);
+            messageContainer.scrollTop = messageContainer.scrollHeight;
 
         } catch (error) {
-            console.error('API Error:', error);
-            // This error means the API_URL is incorrect or the server is not running.
-            displayMessage('Error: Cannot connect to the LILY Backend Server. Check the console for details. (Status: Connection Failed)', 'lily');
-        } finally {
-            loadingIndicator.style.display = 'none';
+            console.error('Error:', error);
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'message lily';
+            errorDiv.innerText = "Error: I can't reach the server. Make sure your CMD is running uvicorn!";
+            messageContainer.appendChild(errorDiv);
         }
     }
+
+    // Allow Enter key to send message
+    document.getElementById('user-input').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') sendMessage();
+    });
 </script>
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
